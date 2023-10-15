@@ -11,8 +11,8 @@ main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__)
 
 
-PASSAGE_API_KEY = os.environ.get("PASSAGE_API_KEY")
-PASSAGE_APP_ID = os.environ.get("PASSAGE_APP_ID")
+PASSAGE_API_KEY = os.getenv("PASSAGE_API_KEY")
+PASSAGE_APP_ID = os.getenv("PASSAGE_APP_ID")
 
 try:
     psg = Passage(PASSAGE_APP_ID, PASSAGE_API_KEY)
@@ -22,6 +22,7 @@ except PassageError as error:
 
 @main.route('/')
 def index():
+    configure()
     return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
 
 @auth.route('/dashboard', methods=['GET'])
