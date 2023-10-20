@@ -1,17 +1,16 @@
-from models.user import User
-from config.db import connection
-from main import extensions
-from extensions import mongo_client
 from  werkzeug.security import generate_password_hash
 from flask import Blueprint, g, render_template, request, jsonify, flash, url_for
+from pymongo import MongoClient
+import os
 
 user_auth = Blueprint('user_auth', __name__)
+mongo_client = MongoClient(os.environ.get("MONGO_URI"))
 
-@user_auth.route("/sign-up", methods=['GET', 'POST'])
+@user_auth.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
-        user_name = request.form.get('useName')
+        user_name = request.form.get('userName')
         first_name = request.form.get('firstName')
         last_name  = request.form.get('lastName')
         biography = request.form.get('biography')
@@ -21,7 +20,7 @@ def login():
         if len(email) < 4:
             flash("email cannot be greater than 4 characters long")
         elif len(first_name) < 2:
-            flash("first name must be greater than 2 characters", category='error')
+            flash("last name must be greater than 2 characters", category='error')
         elif pwd1 != pwd2:
             flash("passwords do not match", category='error')
         elif len(pwd1) < 7:
@@ -33,9 +32,9 @@ def login():
                 "firstName": first_name,
                 "lastName": last_name,
                 "biography": biography,
-                "password": generate_password_hash(pwd1, method='sha1')
+                "password": generate_password_hash(pwd1, method='pbkdf2:sha256:600000')
             }
             user_id = mongo_client.volunteer_connect.user.insert_one(user_entry).inserted_id
             print("inserted id", user_id)
-        return "<h1>Signup Successful!</h1>"
+    return render_template("sign_up.html")
 
