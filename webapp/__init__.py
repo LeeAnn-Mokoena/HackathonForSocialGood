@@ -1,7 +1,7 @@
 from flask import Flask
 from dotenv import load_dotenv, find_dotenv
 from webapp.extensions import mongo_client
-from extensions import mongo_client
+#from extensions import mongo_client
 from flask import Blueprint, g, render_template, request, jsonify
 
 
