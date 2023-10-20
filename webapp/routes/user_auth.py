@@ -2,12 +2,14 @@ from  werkzeug.security import generate_password_hash
 from flask import Blueprint, g, render_template, request, jsonify, flash, url_for
 from pymongo import MongoClient
 import os
+import pprint
+from bson.objectid import ObjectId
 
 user_auth = Blueprint('user_auth', __name__)
 mongo_client = MongoClient(os.environ.get("MONGO_URI"))
 
-@user_auth.route("/login", methods=['GET', 'POST'])
-def login():
+@user_auth.route("/sign-up", methods=['GET', 'POST'])
+def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
         user_name = request.form.get('userName')
@@ -37,4 +39,15 @@ def login():
             user_id = mongo_client.volunteer_connect.user.insert_one(user_entry).inserted_id
             print("inserted id", user_id)
     return render_template("sign_up.html")
+
+@user_auth.route('/users', methods=['GET'])
+def get():
+    printer = pprint.PrettyPrinter()
+
+    users = mongo_client.volunteer_connect.user.find()
+    users_collection = []
+    for user in users:
+       printer.pprint(user)
+       users_collection.append(user) 
+    return users_collection
 
