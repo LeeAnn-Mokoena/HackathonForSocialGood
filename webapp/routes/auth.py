@@ -1,17 +1,24 @@
-from  werkzeug.security import generate_password_hash
+#from  werkzeug.security import generate_password_hash
 from flask import Blueprint, g, render_template, request, jsonify, flash, url_for
 from pymongo import MongoClient
-from passageidentity import Passage, PassageError
 import os
-import pprint
-from bson.objectid import ObjectId
+from dotenv import load_dotenv
+from passageidentity import Passage, PassageError
+import jwt
+#import pprint
+#from bson.objectid import ObjectId
+
+load_dotenv()
 
 auth = Blueprint('auth', __name__)
 main = Blueprint('main', __name__)
-mongo_client = MongoClient(os.environ.get("MONGO_URI"))
+mongo_client = MongoClient(os.getenv("MONGO_URI"))
 
-PASSAGE_API_KEY = os.environ.get("PASSAGE_API_KEY")
-PASSAGE_APP_ID = os.environ.get("PASSAGE_APP_ID")
+API_URL = os.getenv("API_URL")
+
+PASSAGE_API_KEY = os.getenv("PASSAGE_API_KEY")
+PASSAGE_APP_ID = os.getenv("PASSAGE_APP_ID")
+
 
 try:
     psg = Passage(PASSAGE_APP_ID, PASSAGE_API_KEY)
@@ -24,13 +31,32 @@ except PassageError as e:
 def before_request():
     try:
         g.user = psg.authenticateRequest(request)
-    except PassageError:
+        print("g user", g.user)
+    except PassageError as e:
+        print(f"PassageError: {str(e)}")
+        cookies = request.cookies
+        print("request headers", cookies)
         return render_template('unauthorized.html')
     
 @auth.route('/register')
 def register():
-    render_template('register.html', psg_app_id=PASSAGE_APP_ID)
+    return render_template('register.html', psg_app_id=PASSAGE_APP_ID)
 
+@main.route('/')
+def index():
+    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
+
+@auth.route('/{id}/dashboard', methods=['GET'])
+def dashboard():
+    psg_user = psg.getUser(g.user)
+    print("psg user", psg_user)
+
+    identifier = ""
+    if psg_user.email:
+        identifier = psg_user.emaill
+    elif psg_user.phone:
+        identifier = psg_user.phone
+    return render_template('dashboard.html', psg_app_id=PASSAGE_APP_ID)
 
 """@auth.route('/user', methods=['POST'])
 def create_user():
@@ -40,25 +66,8 @@ def create_user():
 
 
 
-@main.route('/')
-def index():
-    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
 
-@auth.route('dashboard', methods=['GET'])
-def dashboard():
-    psg_user = psg.getUser(g.user)
-
-#TO DO -- decide what to do depending on the identifier
-    identifier = ""
-    if psg_user.email:
-        identifier = psg_user.emaill
-    elif psg_user.phone:
-        identifier = psg_user.phone
-    return render_template('dashboard.html', psg_app_id=PASSAGE_APP_ID)
-
-
-
-@auth.route("/sign-up", methods=['GET', 'POST'])
+"""@auth.route("/sign-up", methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -88,9 +97,9 @@ def sign_up():
             }
             user_id = mongo_client.volunteer_connect.user.insert_one(user_entry).inserted_id
             print("inserted id", user_id)
-    return render_template("sign_up.html")
+    return render_template("sign_up.html")"""
 
-@auth.route('/users', methods=['GET'])
+"""@auth.route('/users', methods=['GET'])
 def get():
     printer = pprint.PrettyPrinter()
 
@@ -99,4 +108,4 @@ def get():
     for user in users:
        printer.pprint(user)
        users_collection.append(user) 
-    return users_collection
+    return users_collection"""
