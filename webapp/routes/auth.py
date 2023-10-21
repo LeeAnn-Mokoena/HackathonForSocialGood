@@ -1,14 +1,64 @@
 from  werkzeug.security import generate_password_hash
 from flask import Blueprint, g, render_template, request, jsonify, flash, url_for
 from pymongo import MongoClient
+from passageidentity import Passage, PassageError
 import os
 import pprint
 from bson.objectid import ObjectId
 
-user_auth = Blueprint('user_auth', __name__)
+auth = Blueprint('auth', __name__)
+main = Blueprint('main', __name__)
 mongo_client = MongoClient(os.environ.get("MONGO_URI"))
 
-@user_auth.route("/sign-up", methods=['GET', 'POST'])
+PASSAGE_API_KEY = os.environ.get("PASSAGE_API_KEY")
+PASSAGE_APP_ID = os.environ.get("PASSAGE_APP_ID")
+
+try:
+    psg = Passage(PASSAGE_APP_ID, PASSAGE_API_KEY)
+except PassageError as e:
+    print(e)
+    exit()
+
+
+@auth.before_request
+def before_request():
+    try:
+        g.user = psg.authenticateRequest(request)
+    except PassageError:
+        return render_template('unauthorized.html')
+    
+@auth.route('/register')
+def register():
+    render_template('register.html', psg_app_id=PASSAGE_APP_ID)
+
+
+"""@auth.route('/user', methods=['POST'])
+def create_user():
+    print("creating user")
+    print(request.get_json()["name"])
+    print("whats value of g:", g)"""
+
+
+
+@main.route('/')
+def index():
+    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
+
+@auth.route('dashboard', methods=['GET'])
+def dashboard():
+    psg_user = psg.getUser(g.user)
+
+#TO DO -- decide what to do depending on the identifier
+    identifier = ""
+    if psg_user.email:
+        identifier = psg_user.emaill
+    elif psg_user.phone:
+        identifier = psg_user.phone
+    return render_template('dashboard.html', psg_app_id=PASSAGE_APP_ID)
+
+
+
+@auth.route("/sign-up", methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -40,7 +90,7 @@ def sign_up():
             print("inserted id", user_id)
     return render_template("sign_up.html")
 
-@user_auth.route('/users', methods=['GET'])
+@auth.route('/users', methods=['GET'])
 def get():
     printer = pprint.PrettyPrinter()
 
@@ -50,4 +100,3 @@ def get():
        printer.pprint(user)
        users_collection.append(user) 
     return users_collection
-

@@ -9,13 +9,12 @@ import os
 def create_app():
     #app instance
     app = Flask(__name__)
-    #app.config['PASSAGE_API_KEY'] = os.getenv("PASSAGE_API_KEY")
-    #app.config['PASSAGE_APP_ID'] = os.getenv("PASSAGE_APP_ID")
     app.config['SECRET_KEY']  = os.environ.get("SECRET_KEY")
 
-    from .routes.user_auth import user_auth
+    from .routes.auth import auth as user_auth, main 
     
     app.register_blueprint(user_auth)
+    app.register_blueprint(main)
 
     print('app started::')
     return app
