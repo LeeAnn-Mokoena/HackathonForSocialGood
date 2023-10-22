@@ -1,11 +1,9 @@
 from flask import Blueprint, request, render_template, jsonify, flash, redirect, url_for
 from bson.objectid import ObjectId
 import os
-import views
 from dotenv import load_dotenv
 import pprint
 from pymongo import MongoClient
-
 
 load_dotenv()
 
@@ -52,7 +50,7 @@ def volunteer_opportunities():
             ).inserted_id
         if(volunteer_id != None):
             flash("Submitted Successfully. Thank you for your submittion!", category='success')
-            return redirect(url_for(views.home))
+            #return redirect(url_for(views.home))
     return render_template("volunteer_opportunities.html")
 
 

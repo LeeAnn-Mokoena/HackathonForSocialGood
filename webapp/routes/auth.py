@@ -27,7 +27,7 @@ except PassageError as e:
     exit()
 
 
-@auth.before_request
+"""@auth.before_request
 def before_request():
     try:
         g.user = psg.authenticateRequest(request)
@@ -36,7 +36,7 @@ def before_request():
         print(f"PassageError: {str(e)}")
         cookies = request.cookies
         print("request headers", cookies)
-        return render_template('unauthorized.html')
+        return render_template('unauthorized.html')"""
     
 @auth.route('/register')
 def register():
