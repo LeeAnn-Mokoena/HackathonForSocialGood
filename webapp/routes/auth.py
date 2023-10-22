@@ -46,7 +46,7 @@ def register():
 def index():
     return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
 
-@auth.route('/{id}/dashboard', methods=['GET'])
+@auth.route('/dashboard', methods=['GET'])
 def dashboard():
     psg_user = psg.getUser(g.user)
     print("psg user", psg_user)
