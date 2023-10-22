@@ -13,6 +13,16 @@ v_opportunities = Blueprint('opportunities', __name__)
 
 mongo_client = MongoClient(os.getenv("MONGO_URI"))
 
+
+v_opportunities.route('/organizations', methods=['GET'])
+def get_organizations():
+    if(request.method == 'GET'):
+        organizations = mongo_client.volunteer_connect.organization.find()
+    for org in organizations:
+        pprint(org)
+    return "retrived ogranizations from db"
+
+
 @v_opportunities.route('/register-opportunity', methods=['POST'])
 def volunteer_opportunities():
     if(request.method == 'POST'):
