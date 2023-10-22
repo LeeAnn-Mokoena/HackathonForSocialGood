@@ -26,6 +26,14 @@ body {
   flex-direction: column;
 }
 
+.main-container-custom{
+  padding-top: 60px;
+  padding-left: 185px;
+  padding-right: 185px;
+  display: flex;
+  flex-direction: column;
+}
+
 .main-header{
   padding: 1rem 2rem;
   background-color: #282727;
@@ -42,9 +50,28 @@ body {
   font-size: 2em;
   font-family: 'Lexend Deca', sans-serif;
 }
+.table-header{
+  background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    border: 1px solid #000;
+    text-transform: uppercase;
+}
 
 .passage-logo {
   background-image: url('https://storage.googleapis.com/passage-docs/passage-logo-dark.svg');
+  background-repeat: no-repeat;
+  width: 60px;
+  height: 60px;
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.vc-logo {
+  background-image: url('add link here');
   background-repeat: no-repeat;
   width: 60px;
   height: 60px;

@@ -42,9 +42,9 @@ def before_request():
 def register():
     return render_template('register.html', psg_app_id=PASSAGE_APP_ID)
 
-@main.route('/')
+"""@main.route('/')
 def index():
-    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
+    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)"""
 
 @auth.route('/dashboard', methods=['GET'])
 def dashboard():

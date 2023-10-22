@@ -12,7 +12,7 @@ v_opportunities = Blueprint('opportunities', __name__)
 mongo_client = MongoClient(os.getenv("MONGO_URI"))
 
 
-v_opportunities.route('/organizations', methods=['GET'])
+@v_opportunities.route('/organizations', methods=['GET'])
 def get_organizations():
     if(request.method == 'GET'):
         organizations = mongo_client.volunteer_connect.organization.find()
@@ -50,16 +50,7 @@ def volunteer_opportunities():
             ).inserted_id
         if(volunteer_id != None):
             flash("Submitted Successfully. Thank you for your submittion!", category='success')
-            #return redirect(url_for(views.home))
+            return redirect(url_for(views.home))
     return render_template("volunteer_opportunities.html")
-
-
-@v_opportunities.route('/volunteer/opportunities', methods=['GET'])
-def list_volunteer_opportunities():
-    if(request.method == 'GET'):
-        volunteer_collection = mongo_client.volunteering_options.find()
-    for v_op in volunteer_collection:
-        pprint.pprint(v_op)
-    return "<h2>Successfully returned</h2>"
 
 
