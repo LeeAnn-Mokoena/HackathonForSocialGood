@@ -1,5 +1,28 @@
 /.env
 
+.venv
+env/
+venv/
+ENV/
+
 /.vscode
 
-/__pycache__
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+
+*.manifest
+*.spec
+
+instance/
+.webassets-cache
+
+target/
+.python-version
