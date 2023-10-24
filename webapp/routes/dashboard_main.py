@@ -52,7 +52,6 @@ def user_signup():
                 'status': 'Pending'
                     }).inserted_id
             if inserted_id != None:
-                print("inserted id", inserted_id)
                 flash("Successfully Submitted volunteer interest. Your submission is now being reviewed")
     return render_template('sign_up.html')  
 
