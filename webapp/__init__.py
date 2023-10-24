@@ -12,7 +12,6 @@ def create_app():
     from .routes.auth import auth as user_auth, main
     from .routes.organizations import v_opportunities
     from .routes.dashboard_main import dashboard
-
     
     app.register_blueprint(user_auth)
     app.register_blueprint(main)

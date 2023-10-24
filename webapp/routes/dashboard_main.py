@@ -1,7 +1,6 @@
 from flask import Blueprint, request, render_template,flash
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
-import pprint
 import json
 import os
 from datetime import datetime
@@ -15,7 +14,6 @@ mongo_client = MongoClient(os.getenv("MONGO_URI"))
 
 @dashboard.route('/', methods=['GET'])
 def dashboard_main():
-    #fetch volunteer opportunities
     organizations_list = mongo_client.volunteer_connect.organization.find()
     existing_opportunities = []
     for org in organizations_list:
@@ -58,7 +56,6 @@ def user_signup():
                 flash("Successfully Submitted volunteer interest. Your submission is now being reviewed")
     return render_template('sign_up.html')  
 
-
  #helper function section
 def process_opportunities(existing_opportunities):
     results = []
@@ -82,17 +79,3 @@ def extract_nested_document(org_id, title_to_match):
     nested_documents = org.get("volunteerOpportunities",[])
     filtered_nested_doc = next((v_opportunity for v_opportunity in nested_documents if v_opportunity.get("title") == title_to_match), None)
     return filtered_nested_doc
-        
-
-"""def query_org_opportunity(existing_org_id, volunteer_interest):
-    title_to_match = volunteer_interest
-    org_id = ObjectId(existing_org_id)
-    query = {
-        "_id": org_id,
-        "volunteerOpportunities.title": title_to_match
-    }
-    org_opportunity = mongo_client.volunteer_connect.organization.find_one(query)
-    print("matched data found=============================")
-    print(org_opportunity)
-    #print("matched results:::::", str(matched_result))
-    return """
