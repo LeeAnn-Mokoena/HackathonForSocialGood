@@ -10,7 +10,6 @@ load_dotenv()
 
 auth = Blueprint('auth', __name__)
 main = Blueprint('main', __name__)
-#dashboard = Blueprint('dashboard', __name__)
 
 mongo_client = MongoClient(os.getenv("MONGO_URI"))
 API_URL = os.getenv("API_URL")
