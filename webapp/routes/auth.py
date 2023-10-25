@@ -12,6 +12,7 @@ mongo_client = MongoClient(os.getenv("MONGO_URI"))
 API_URL = os.getenv("API_URL")
 PASSAGE_API_KEY = os.getenv("PASSAGE_API_KEY")
 PASSAGE_APP_ID = os.getenv("PASSAGE_APP_ID")
+ID = os.getenv("ID")
 
 try:
     psg = Passage(PASSAGE_APP_ID, PASSAGE_API_KEY)
@@ -21,9 +22,9 @@ except PassageError as e:
 @auth.before_request
 def before_request():
     try:
-        print("request cookies::", request.cookies)
         if request.path.startswith('/admin') or request.path.startswith('/register'):
             g.admin_request = True
+            print("request values:", request)
             g.user = psg.authenticateRequest(request)
             print("authenticated user", g.user)
             return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
@@ -34,13 +35,23 @@ def before_request():
         print("authentication failed!!", str(e))
         return render_template('unauthorized.html')
 
+#execute first to either register or login with code sent to existing email
 @auth.route('/register')
 def register():
     return render_template('register.html', psg_app_id=PASSAGE_APP_ID)
 
+@auth.route('/login')
+def login():
+    return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
+
+#after successfu authentication/login direct to the dashboard
+@auth.route(f'/{ID}/dashboard')
+def dashboard():
+    return render_template('dashboard.html', psg_app_id=PASSAGE_APP_ID)
+
+#will be prompted to login/register if not already done so
 @auth.route('/admin/register-org', methods=['POST', 'GET'])
 def register_organization():
-    print("inside register org!!!!!")
     if request.method == 'POST' and g.admin_request == True:
         organization_name = request.form.get('org-name')
         existing_org = get_org_from_name(organization_name)
