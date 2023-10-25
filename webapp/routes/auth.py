@@ -24,12 +24,9 @@ def before_request():
     try:
         if request.path.startswith('/admin') or request.path.startswith('/register'):
             g.admin_request = True
-            print("request values:", request)
             g.user = psg.authenticateRequest(request)
-            print("authenticated user", g.user)
             return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
         else:
-            print("seting admin request to false")
             g.admin_request = False
     except PassageError as e:
         print("authentication failed!!", str(e))
