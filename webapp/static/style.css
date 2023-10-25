@@ -89,6 +89,12 @@ body {
   text-decoration-color: white;
 }
 
+.btn-primary-delete{
+  background-color: #f50707;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
 .footer {
   text-align: center;
   font-size: 1.25em;

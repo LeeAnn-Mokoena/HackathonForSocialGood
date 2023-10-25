@@ -31,9 +31,6 @@
                 <th>Description</th>
                 <th>Location</th>
                 <th>Contact Information</th>
-                <th>Volunteer Option Types</th>
-                <th>Requirements</th>
-                <th>Org Opportunities</th>
             </tr>
         </thead>
         <tbody>
@@ -43,9 +40,6 @@
                 <td>{{ document.description }}</td>
                 <td>{{ document.location }}</td>
                 <td>{{ document.contactInformation }}</td>
-                <td>{{ document.volunteerOptionTypes }}</td>
-                <td>{{ document.requirements }}</td>
-                <td><a href="/organization/{{document.id}}/opportunities">View opportunities</td>
             </tr>
             {% endfor %}
         </tbody>

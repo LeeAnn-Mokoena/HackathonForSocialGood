@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+    content %}
+    <form method="POST">
+      <h3 align="center">Remove Organization from collection</h3>
+        <div class="form-group">
+          <label for="org-name">Organization Name to remove</label>
+          <input
+            type="org-name"
+            class="form-control"
+            id="org-name"
+            name="org-name"
+            placeholder="Enter organization name to remove"
+          />
+        </div>
+        <div class="form-group">
+            <label for="org-name-confirm">Confirm organization name</label>
+            <input
+              type="org-name-confirm"
+              class="form-control"
+              id="oorg-name-confirm"
+              name="org-name-confirm"
+              placeholder="Re-enter name to confirm"
+            />
+          </div>
+      <br />
+      <button type="submit" class="btn-primary-delete">Submit</button>
+      <button type="return" class="btn btn-primary"><a href="/organizations">Return to organization dashboard</a></button>
+    </form>
+    {% endblock %}
