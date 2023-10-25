@@ -21,13 +21,17 @@ except PassageError as e:
 @auth.before_request
 def before_request():
     try:
-        if (request.path.startswith('/admin') or request.path.startswith('/register')):
+        print("request cookies::", request.cookies)
+        if request.path.startswith('/admin') or request.path.startswith('/register'):
             g.admin_request = True
             g.user = psg.authenticateRequest(request)
+            print("authenticated user", g.user)
             return render_template('index.html', psg_app_id=PASSAGE_APP_ID)
         else:
+            print("seting admin request to false")
             g.admin_request = False
-    except PassageError:
+    except PassageError as e:
+        print("authentication failed!!", str(e))
         return render_template('unauthorized.html')
 
 @auth.route('/register')
@@ -36,11 +40,12 @@ def register():
 
 @auth.route('/admin/register-org', methods=['POST', 'GET'])
 def register_organization():
+    print("inside register org!!!!!")
     if request.method == 'POST' and g.admin_request == True:
         organization_name = request.form.get('org-name')
         existing_org = get_org_from_name(organization_name)
         if existing_org != None:
-            flash("Organization already exists. Update the organization instead")
+            flash("Organization already exists. Update the organization instead", category='error')
             redirect(url_for('organizations.create_organization'))
         else:
             org_bio = request.form.get('description')
@@ -77,7 +82,9 @@ def register_organization():
 
             
                 return redirect(url_for('views.home'))
-    elif g.admin == False:
+    elif request.method == 'GET':
+        render_template("organization_register.html")
+    elif g.admin_request == False:
         render_template('unauthorized.html')
     return render_template("organization_register.html")
 
